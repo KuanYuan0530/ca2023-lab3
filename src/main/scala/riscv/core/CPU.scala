@@ -12,9 +12,9 @@ class CPU extends Module {
   val io = IO(new CPUBundle)
 
   val regs       = Module(new RegisterFile)
-  val inst_fetch = Module(new InstructionFetch)
-  val id         = Module(new InstructionDecode)
-  val ex         = Module(new Execute)
+  val inst_fetch = Module(new InstructionFetch) // 4 input, 2 output
+  val id         = Module(new InstructionDecode) // 1 input, 10 output
+  val ex         = Module(new Execute) // 7 input,3 output
   val mem        = Module(new MemoryAccess)
   val wb         = Module(new WriteBack)
 
@@ -39,6 +39,14 @@ class CPU extends Module {
   id.io.instruction := inst_fetch.io.instruction
 
   // lab3(cpu) begin
+  // lack 3 InstructionDecode output, and 7 execute input
+  ex.io.instruction := inst_fetch.io.instruction
+  ex.io.instruction_address := inst_fetch.io.instruction_address
+  ex.io.reg1_data := regs.io.read_data1
+  ex.io.reg2_data := regs.io.read_data2
+  ex.io.immediate := id.io.ex_immediate
+  ex.io.aluop1_source := id.io.ex_aluop1_source
+  ex.io.aluop2_source := id.io.ex_aluop2_source
 
   // lab3(cpu) end
 
